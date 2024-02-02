@@ -42,10 +42,11 @@ public class PlayerController : MonoBehaviour
     private float cameraRotationLimit; // 카메라 위아래로 돌릴 때 각도를 제한을 둠
     private float currentCameraRotationX = 0f; // 정면으로 디폴트 세팅
 
+    // 필요한 컴포넌트
     [SerializeField]
     private Camera theCamera;
-
     private Rigidbody myRigid;
+    private GunController theGunController;
 
 
     // Start is called before the first frame update
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
         applySpeed = walkSpeed; // default speed
         originPosY = theCamera.transform.localPosition.y; // 앉을 때 카메라 위치를 수정
         applyCrouchPosY = originPosY;
+        theGunController = FindObjectOfType<GunController>();
     }
 
     // Update is called once per frame
@@ -164,6 +166,10 @@ public class PlayerController : MonoBehaviour
         // 앉은 상태에서 달리기 시, 앉은 상태 해제
         if (isCrouch)
             Crouch();
+
+        // 달리기 시 정조준 해제
+        theGunController.CancelFineSight();
+
         isRun = true;
         applySpeed = runSpeed;
     }
