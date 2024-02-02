@@ -21,9 +21,13 @@ public class PlayerController : MonoBehaviour
     private float jumpForce;
 
     // 상태 변수 (walk/run)
+    private bool isWalk = false;
     private bool isRun = false;
     private bool isCrouch = false;
     private bool isGround = true; // 공중에서 점프 못하게
+
+    // 움직임 체크 변수
+    private Vector3 lastPos; // 전 프레임의 플레이어 위치 기록 (움직임이 있는지/ 없는지 체크)
 
     // 앉았을 때 얼마나 앉을지 결정하는 변수
     [SerializeField]
@@ -47,6 +51,7 @@ public class PlayerController : MonoBehaviour
     private Camera theCamera;
     private Rigidbody myRigid;
     private GunController theGunController;
+    private CrossHair theCrosshair;
 
 
     // Start is called before the first frame update
@@ -59,6 +64,7 @@ public class PlayerController : MonoBehaviour
         originPosY = theCamera.transform.localPosition.y; // 앉을 때 카메라 위치를 수정
         applyCrouchPosY = originPosY;
         theGunController = FindObjectOfType<GunController>();
+        theCrosshair = FindObjectOfType<CrossHair>(); // # 크로스헤어를 플레이어에 넣는다는 거임?
     }
 
     // Update is called once per frame
@@ -69,7 +75,8 @@ public class PlayerController : MonoBehaviour
         TryJump();
         TryRun();
         TryCrouch();
-        Move();
+        float moveSpeed = Move();
+        MoveCheck(moveSpeed);
         CameraRotation(); // 고개 위 아래로 회전만 구현
         CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
     }
@@ -85,6 +92,8 @@ public class PlayerController : MonoBehaviour
     private void Crouch()
     {
         isCrouch = !isCrouch; // toggle
+        theCrosshair.CrouchingAnimation(isCrouch);
+
         if (isCrouch)
         {
             applySpeed = crouchSpeed;
@@ -142,10 +151,10 @@ public class PlayerController : MonoBehaviour
         // Vector3.down을 쓴 이유
         // 1. transform.left 와 transform.down은 없다
         // 2. -transform.up을 사용하면 transform 객체의 상태에 의존적임. 절대좌표계에서 (0,-1,0)이 아니라는 뜻
-        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.1f); 
-        // (시작, 방향, 거리) 인듯? 객체 중심에서 절대적인 아래 방향으로 콜라이더의 반 거리만큼 쏜다. 배꼽에서 발까지 ray를 쏜 느낌
-        // 0.1f은 약간의 여유 값
-        // # 왜 콜라이더로 안하고 ㅋㅋ raycast로 하지
+        isGround = Physics.Raycast(transform.position, Vector3.down, capsuleCollider.bounds.extents.y + 0.3f);
+        
+
+        theCrosshair.RunningAnimation(!isGround);
     }
 
     private void TryRun()
@@ -171,16 +180,18 @@ public class PlayerController : MonoBehaviour
         theGunController.CancelFineSight();
 
         isRun = true;
+        theCrosshair.RunningAnimation(isRun);
         applySpeed = runSpeed;
     }
 
     private void RunningCancel()
     {
         isRun = false;
+        theCrosshair.RunningAnimation(isRun);
         applySpeed = walkSpeed;
     }
 
-    private void Move()
+    private float Move() // 속도의 크기를 반환 (속력 반환)
     {
         float _moveDirX = Input.GetAxisRaw("Horizontal"); // 좌 우
         float _moveDirZ = Input.GetAxisRaw("Vertical"); // 앞 뒤
@@ -191,6 +202,23 @@ public class PlayerController : MonoBehaviour
         Vector3 _velocity = (_moveHorizontal + _moveVertical).normalized * applySpeed;
 
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
+        return _velocity.magnitude;
+    }
+
+    // isWalk를 판정하기 위한 함수
+    private void MoveCheck(float moveSpeed)
+    {
+        if (!isRun && !isCrouch && isGround) 
+        {
+            if (moveSpeed > 0.01f)
+                isWalk = true;
+            else
+                isWalk = false;
+
+            theCrosshair.WalkingAnimation(isWalk);
+            lastPos = transform.position;
+        }
+        
     }
 
     private void CameraRotation()
@@ -210,4 +238,5 @@ public class PlayerController : MonoBehaviour
         myRigid.MoveRotation(myRigid.rotation * Quaternion.Euler(_characterRotationY)); // MoveRotation()함수가 quaternion form으로 input을 받기 때문에 quaternion으로 변환
         
     }
+
 }
