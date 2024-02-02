@@ -13,7 +13,8 @@ public class GunController : MonoBehaviour
 
     // 상태 변수
     private bool isReload = false;
-    private bool isFineSightMode = false;
+    [HideInInspector]
+    public bool isFineSightMode = false;
 
     // 효과음 재생
     private AudioSource audioSource;
@@ -21,8 +22,19 @@ public class GunController : MonoBehaviour
     // 원래 포지션 값
     private Vector3 originPos;
 
+    // 충돌 정보 받아옴.
+    private RaycastHit hitInfo;
+
+    [SerializeField]
+    private Camera theCam; // 카메라 시점으로 정 가운데 (크로스헤어)로부터 ray를 쏘기 위해 카메라 받아옴
+
+    // 피격이펙트
+    [SerializeField]
+    private GameObject hit_effect_prefab;
+
     private void Start()
     {
+        originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -33,6 +45,7 @@ public class GunController : MonoBehaviour
         TryFire();
         TryReload();
         TryFineSight();
+        Debug.DrawRay(theCam.transform.position, theCam.transform.forward * currentGun.range, Color.red);
     }
 
     // 연사 속도 계산
@@ -74,11 +87,24 @@ public class GunController : MonoBehaviour
         currentFireRate = currentGun.fireRate;
         PlaySE(currentGun.fireSound);
         currentGun.muzzleFlash.Play();
-
+        Hit(); // 총알을 진짜로 구현하려면 미리 총알을 만들어두고 object pooling을 이용해서 구현해야 함. 여기서는 그냥 쏘는대로 맞는 것으로 구현
         StopAllCoroutines();
         StartCoroutine(RetroActionCoroutine());
     }
 
+    private void Hit()
+    {
+        
+        if (Physics.Raycast(theCam.transform.position, theCam.transform.forward, out hitInfo, currentGun.range))
+        {
+            // Instantiate : 객체 생성 메서드
+            // hitInfo.point : 충돌한 지점의 좌표 반환
+            // Quaternion.LookRotation() : 해당 벡터를 바라보는 회전 상태 반환
+            // hitInfo.normal : 충돌한 표면의 노멀값 반환
+            GameObject clone = Instantiate(hit_effect_prefab, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+            Destroy(clone, 2f);
+        }
+    }
 
     // 재장전시도
     private void TryReload()
