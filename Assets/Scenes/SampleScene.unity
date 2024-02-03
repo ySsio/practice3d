@@ -11241,7 +11241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1087882958
 Transform:
   m_ObjectHideFlags: 0
@@ -11572,6 +11572,7 @@ GameObject:
   - component: {fileID: 1648718809}
   - component: {fileID: 1648718810}
   - component: {fileID: 1648718811}
+  - component: {fileID: 1648718812}
   m_Layer: 2
   m_Name: Holder
   m_TagString: Untagged
@@ -11722,6 +11723,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1648718812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648718807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30c3ffdcf574ae54b9dc471689dbb1c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  changeWeaponDelayTime: 0.3
+  changeWeaponEndDelayTime: 0.1
+  guns:
+  - {fileID: 456494047}
+  hands:
+  - {fileID: 639389769416822194}
+  theGunController: {fileID: 1648718810}
+  theHandController: {fileID: 1648718809}
+  currentWeaponType: GUN
 --- !u!1 &1689838600
 GameObject:
   m_ObjectHideFlags: 0
@@ -12293,7 +12315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &639389769416822193
 Animator:
   serializedVersion: 4

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
+    // 활성화 여부
+    public static bool isActivate = true;
+
     // 현재 장착된 총
     [SerializeField]
     private Gun currentGun;
@@ -40,16 +43,20 @@ public class GunController : MonoBehaviour
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
         theCrossHair = FindObjectOfType<CrossHair>();
+
+        WeaponManager.currentWeapon = currentGun.GetComponent<Transform>();
+        WeaponManager.currentWeaponAnim = currentGun.anim;
     }
 
     // Update is called once per frame
     void Update()
     {
-        GunFireRateCalc();
-        TryFire();
-        TryReload();
-        TryFineSight();
-        
+        if (isActivate) {
+            GunFireRateCalc();
+            TryFire();
+            TryReload();
+            TryFineSight();
+        }
     }
 
     // 연사 속도 계산
@@ -64,7 +71,7 @@ public class GunController : MonoBehaviour
     // 발사 시도
     private void TryFire()
     {
-        if(Input.GetButton("Fire1") && currentFireRate <= 0 && !isReload)
+        if (Input.GetButton("Fire1") && currentFireRate <= 0 && !isReload)
         {
             Fire();
         }
@@ -130,7 +137,7 @@ public class GunController : MonoBehaviour
     // 재장전 코루틴
     IEnumerator ReloadCoroutine()
     {
-        if(currentGun.carryBulletCount > 0)
+        if (currentGun.carryBulletCount > 0)
         {
             isReload = true;
             currentGun.anim.SetTrigger("Reload");
@@ -141,7 +148,7 @@ public class GunController : MonoBehaviour
             {
                 currentGun.carryBulletCount -= currentGun.reloadBulletCount - currentGun.currentBulletCount;
                 currentGun.currentBulletCount = currentGun.reloadBulletCount;
-                
+
             } else
             {
                 currentGun.currentBulletCount += currentGun.carryBulletCount;
@@ -152,6 +159,15 @@ public class GunController : MonoBehaviour
         else
         {
             Debug.Log("소유한 총알이 없습니다.");
+        }
+    }
+
+    public void CancelReload()
+    {
+        if (isReload)
+        {
+            StopCoroutine(ReloadCoroutine());
+            isReload = false;
         }
     }
 
@@ -287,5 +303,21 @@ public class GunController : MonoBehaviour
     public bool GetFineSightMode()
     {
         return isFineSightMode;
+    }
+
+    public void GunChange(Gun _gun)
+    {
+        if(WeaponManager.currentWeapon != null)
+            WeaponManager.currentWeapon.gameObject.SetActive(false);
+
+        currentGun = _gun;
+
+        WeaponManager.currentWeapon = currentGun.GetComponent<Transform>();
+        WeaponManager.currentWeaponAnim = currentGun.anim;
+
+        currentGun.transform.localPosition = originPos;
+
+        currentGun.gameObject.SetActive(true);
+        isActivate = true;
     }
 }
