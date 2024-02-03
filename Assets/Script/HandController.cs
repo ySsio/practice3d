@@ -20,7 +20,6 @@ public class HandController : CloseWeaponController
             if (CheckObject())
             {
                 isSwing = false;
-                Debug.Log(hitInfo.transform.name);
             }
             yield return null;
 
