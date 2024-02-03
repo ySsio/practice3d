@@ -26,11 +26,17 @@ public class WeaponManager : MonoBehaviour
     [SerializeField]
     private Gun[] guns; // 무기 목록
     [SerializeField]
-    private Hand[] hands; // 손 목록
+    private CloseWeapon[] hands; // 손 목록
+    [SerializeField]
+    private CloseWeapon[] axes; // 도끼 목록
+    [SerializeField]
+    private CloseWeapon[] pickaxes; // 도끼 목록
 
     // guns 배열에 어떤 무기가 들어있는지 참조하기 쉽게 하기 위해 딕셔너리 선언
     private Dictionary<string, Gun> gunDictionary = new Dictionary<string, Gun>();
-    private Dictionary<string, Hand> handDictionary = new Dictionary<string, Hand>();
+    private Dictionary<string, CloseWeapon> handDictionary = new Dictionary<string, CloseWeapon>();
+    private Dictionary<string, CloseWeapon> axeDictionary = new Dictionary<string, CloseWeapon>();
+    private Dictionary<string, CloseWeapon> pickaxeDictionary = new Dictionary<string, CloseWeapon>();
 
     // 필요한 컴포넌트
     // 한 쪽을 키면 다른 쪽을 끔. gun과 hand를 구분하기 위해 변수 선언
@@ -38,11 +44,15 @@ public class WeaponManager : MonoBehaviour
     private GunController theGunController;
     [SerializeField]
     private HandController theHandController;
-
-
-    // 현재 무기의 타입 (GUN / HAND)
     [SerializeField]
-    private string currentWeaponType;
+    private AxeController theAxeController;
+    [SerializeField]
+    private PickaxeController thePickaxeController;
+
+
+    // 현재 무기의 타입 (GUN / HAND / AXE)
+    [SerializeField]
+    private string currentWeaponType = "PICKAXE";
 
     
     // Start is called before the first frame update
@@ -55,7 +65,16 @@ public class WeaponManager : MonoBehaviour
 
         for (int i = 0; i < hands.Length; i++)
         {
-            handDictionary.Add(hands[i].handName, hands[i]);
+            handDictionary.Add(hands[i].closeWeaponName, hands[i]);
+        }
+
+        for (int i = 0; i < axes.Length; i++)
+        {
+            axeDictionary.Add(axes[i].closeWeaponName, axes[i]);
+        }
+        for (int i = 0; i < pickaxes.Length; i++)
+        {
+            pickaxeDictionary.Add(pickaxes[i].closeWeaponName, pickaxes[i]);
         }
 
     }
@@ -70,10 +89,20 @@ public class WeaponManager : MonoBehaviour
                 // 무기 교체 실행 (맨손)
                 StartCoroutine(ChangeWeaponCoroutine("HAND", "맨손"));
             }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 // 무기 교체 실행 (서브머신건)
                 StartCoroutine(ChangeWeaponCoroutine("GUN", "SubMachineGun1"));
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                // 무기 교체 실행 (도끼)
+                StartCoroutine(ChangeWeaponCoroutine("AXE", "Axe"));
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                // 무기 교체 실행 (곡괭이)
+                StartCoroutine(ChangeWeaponCoroutine("PICKAXE", "Pickaxe"));
             }
         }
     }
@@ -108,6 +137,14 @@ public class WeaponManager : MonoBehaviour
                 HandController.isActivate = false;
                 theHandController.enabled = false;
                 break;
+            case "AXE":
+                AxeController.isActivate = false;
+                theAxeController.enabled = false;
+                break;
+            case "PICKAXE":
+                PickaxeController.isActivate = false;
+                thePickaxeController.enabled = false;
+                break;
         }
     }
 
@@ -121,8 +158,18 @@ public class WeaponManager : MonoBehaviour
         }
         else if (_type == "HAND")
         {
-            theHandController.HandChange(handDictionary[_name]);
+            theHandController.CloseWeaponChange(handDictionary[_name]);
             theHandController.enabled = true;
+        }
+        else if (_type == "AXE")
+        {
+            theAxeController.CloseWeaponChange(axeDictionary[_name]);
+            theAxeController.enabled = true;
+        }
+        else if (_type == "PICKAXE")
+        {
+            thePickaxeController.CloseWeaponChange(pickaxeDictionary[_name]);
+            thePickaxeController.enabled = true;
         }
 
         currentWeaponType = _type;
