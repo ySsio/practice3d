@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class AxeController : CloseWeaponController
 {
-    // 활성화 여부
-    public static bool isActivate = false;
+    
 
 
     void Update()
     {
-        if (isActivate)
-            TryAttack();
+        TryAttack();
     }
 
     protected override IEnumerator HitCoroutine()
@@ -29,9 +27,5 @@ public class AxeController : CloseWeaponController
         }
     }
 
-    public override void CloseWeaponChange(CloseWeapon _closeWeapon)
-    {
-        base.CloseWeaponChange(_closeWeapon);
-        isActivate = true;
-    }
+    
 }

@@ -7,14 +7,26 @@ public class WeaponManager : MonoBehaviour
     // static은 클래스 변수를 선언하는 것. 모든 객체가 공유하는 변수
     // 인스턴스를 선언하지 않아도 클래스에서 바로 가져다 쓸 수 있음. WeaponManager.isChaneWeapon 이렇게
 
-    // 무기 중복 교체 실행 방지.
+    
+    // 무기 중복 교체 실행 방지. true인 동안에 무기 교체x
     public static bool isChangeWeapon = false;
 
-    // 현재 무기와 애니메이션
+    // ################## 현재 무기에 대한 정보 ################
+
+    // 현재 무기 객체
     public static Transform currentWeapon; // Transform class로 정의한 이유는 이 변수가 껐다 키는 역할만 할거고,
                                            // 현재 무기가 Gun type 일 수도 있고 Hand type일 수 도 있는데
                                            // 이거를 한 개의 변수에 받기 위해 Transform type으로 지정한 것.
+
+    // 현재 무기 애니메이션
     public static Animator currentWeaponAnim;
+
+
+    // 현재 무기의 타입 (GUN / HAND / AXE / PICKAXE)
+    [SerializeField]
+    private string currentWeaponType; 
+
+    // #########################################################
 
     // 무기 교체 딜레이
     [SerializeField]
@@ -22,7 +34,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField]
     private float changeWeaponEndDelayTime; // 무기 꺼내는 시간
 
-    // 무기 종류 전부 관리
+    // 무기 종류 전부 관리 (= prefabs)
     [SerializeField]
     private Gun[] guns; // 무기 목록
     [SerializeField]
@@ -32,14 +44,14 @@ public class WeaponManager : MonoBehaviour
     [SerializeField]
     private CloseWeapon[] pickaxes; // 도끼 목록
 
-    // guns 배열에 어떤 무기가 들어있는지 참조하기 쉽게 하기 위해 딕셔너리 선언
+    // 무기 종류 이름으로 관리 (= string name)
     private Dictionary<string, Gun> gunDictionary = new Dictionary<string, Gun>();
     private Dictionary<string, CloseWeapon> handDictionary = new Dictionary<string, CloseWeapon>();
     private Dictionary<string, CloseWeapon> axeDictionary = new Dictionary<string, CloseWeapon>();
     private Dictionary<string, CloseWeapon> pickaxeDictionary = new Dictionary<string, CloseWeapon>();
 
     // 필요한 컴포넌트
-    // 한 쪽을 키면 다른 쪽을 끔. gun과 hand를 구분하기 위해 변수 선언
+    // 한 종류 무기의 컨트롤러만 켜기 위해 모든 무기의 컨트롤러 받아옴
     [SerializeField]
     private GunController theGunController;
     [SerializeField]
@@ -50,14 +62,13 @@ public class WeaponManager : MonoBehaviour
     private PickaxeController thePickaxeController;
 
 
-    // 현재 무기의 타입 (GUN / HAND / AXE)
-    [SerializeField]
-    private string currentWeaponType = "PICKAXE";
+    
 
     
     // Start is called before the first frame update
     void Start()
     {
+        // 무기 딕셔너리 초기화
         for (int i = 0; i < guns.Length; i++)
         {
             gunDictionary.Add(guns[i].gunName, guns[i]);
@@ -79,8 +90,14 @@ public class WeaponManager : MonoBehaviour
 
     }
 
+
     // Update is called once per frame
     void Update()
+    {
+        TryChangeWeapon();
+    }
+
+    private void TryChangeWeapon()
     {
         if (!isChangeWeapon)
         {
@@ -110,17 +127,25 @@ public class WeaponManager : MonoBehaviour
 
     public IEnumerator ChangeWeaponCoroutine(string _type, string _name)
     {
-        isChangeWeapon = true;
-        currentWeaponAnim.SetTrigger("Weapon_Out");
+        isChangeWeapon = true; // 이 코루틴 끝날 때까지 TryChaneWeapon() 무시 (= 무기교체 x)
 
+        // 무기 교체 애니메이션 실행, 애니메이션 실행 동안 딜레이 부여
+        currentWeaponAnim.SetTrigger("Weapon_Out");
         yield return new WaitForSeconds(changeWeaponDelayTime);
 
+        // ################# 무기 교체를 실행하는 부분 ####################
+        
+        // 현재 무기와 그 무기의 controller을 비활성화
         CancelPreWeaponAction();
+
+        // 바꿀 무기와 그 무기의 controller을 활성화
         WeaponChange(_type,_name);
+
+        // ###################################################################
 
         yield return new WaitForSeconds(changeWeaponEndDelayTime);
 
-        isChangeWeapon = false;
+        isChangeWeapon = false; // 다시 무기 교체 가능한 상태
     }
 
     private void CancelPreWeaponAction()
@@ -130,19 +155,15 @@ public class WeaponManager : MonoBehaviour
             case "GUN":
                 theGunController.CancelFineSight();
                 theGunController.CancelReload();
-                GunController.isActivate = false;
                 theGunController.enabled = false;
                 break;
             case "HAND":
-                HandController.isActivate = false;
                 theHandController.enabled = false;
                 break;
             case "AXE":
-                AxeController.isActivate = false;
                 theAxeController.enabled = false;
                 break;
             case "PICKAXE":
-                PickaxeController.isActivate = false;
                 thePickaxeController.enabled = false;
                 break;
         }
@@ -151,27 +172,26 @@ public class WeaponManager : MonoBehaviour
 
     private void WeaponChange(string _type, string _name)
     {
-        if (_type == "GUN")
+        switch (_type)
         {
-            theGunController.GunChange(gunDictionary[_name]);
-            theGunController.enabled = true;
+            case "GUN":
+                theGunController.GunChange(gunDictionary[_name]);
+                theGunController.enabled = true;
+                break;
+            case "HAND":
+                theHandController.CloseWeaponChange(handDictionary[_name]);
+                theHandController.enabled = true;
+                break;
+            case "AXE":
+                theAxeController.CloseWeaponChange(axeDictionary[_name]);
+                theAxeController.enabled = true;
+                break;
+            case "PICKAXE":
+                thePickaxeController.CloseWeaponChange(pickaxeDictionary[_name]);
+                thePickaxeController.enabled = true;
+                break;
         }
-        else if (_type == "HAND")
-        {
-            theHandController.CloseWeaponChange(handDictionary[_name]);
-            theHandController.enabled = true;
-        }
-        else if (_type == "AXE")
-        {
-            theAxeController.CloseWeaponChange(axeDictionary[_name]);
-            theAxeController.enabled = true;
-        }
-        else if (_type == "PICKAXE")
-        {
-            thePickaxeController.CloseWeaponChange(pickaxeDictionary[_name]);
-            thePickaxeController.enabled = true;
-        }
-
+        
         currentWeaponType = _type;
     }
 }
