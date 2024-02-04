@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody myRigid;
     private GunController theGunController;
     private CrossHair theCrosshair;
+    private StatusController theStatusController;
 
 
     // Start is called before the first frame update
@@ -60,11 +61,15 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
         // theCamera = FindObjectOfType<Camera>(); // hierarchy 내에서 camera object를 찾아서 넣어줌 (한 개일때만 사용 가능, 이번엔 SerializeField로 구현함
         myRigid = GetComponent<Rigidbody>();
+        theGunController = FindObjectOfType<GunController>();
+        theCrosshair = FindObjectOfType<CrossHair>(); // # 크로스헤어를 플레이어에 넣는다는 거임?
+        theStatusController = FindObjectOfType<StatusController>();
+
+
         applySpeed = walkSpeed; // default speed
         originPosY = theCamera.transform.localPosition.y; // 앉을 때 카메라 위치를 수정
         applyCrouchPosY = originPosY;
-        theGunController = FindObjectOfType<GunController>();
-        theCrosshair = FindObjectOfType<CrossHair>(); // # 크로스헤어를 플레이어에 넣는다는 거임?
+        
     }
 
     // Update is called once per frame
@@ -143,6 +148,7 @@ public class PlayerController : MonoBehaviour
         // 앉은 상태에서 점프 시, 앉은 상태 해제
         if (isCrouch)
             Crouch();
+        theStatusController.DecreaseStamina(100);
         myRigid.velocity = transform.up * jumpForce;
     }
 
@@ -178,6 +184,8 @@ public class PlayerController : MonoBehaviour
 
         // 달리기 시 정조준 해제
         theGunController.CancelFineSight();
+
+        theStatusController.DecreaseStamina(10);
 
         isRun = true;
         theCrosshair.RunningAnimation(isRun);
