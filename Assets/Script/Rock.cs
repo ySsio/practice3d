@@ -20,6 +20,12 @@ public class Rock : MonoBehaviour
     private GameObject go_debris; // 깨진 바위
     [SerializeField]
     private GameObject go_effect_prefabs; // 채굴 이펙트
+    [SerializeField]
+    private GameObject go_rock_item_prefabs; // 돌멩이 아이템 프리펩
+
+    // 돌멩이 아이템 등장 개수
+    [SerializeField]
+    private int count;
 
 
     // 효과음 이름
@@ -46,9 +52,15 @@ public class Rock : MonoBehaviour
     private void Destruction()
     {
         SoundManager.instance.PlaySE(destroy_Sound);
-        Destroy(go_rock); // 기존 돌을 아예 메모리에서 제거해버림
+        
         col.enabled = false;
 
+        for (int i = 0; i < count; i++)
+        {
+            Instantiate(go_rock_item_prefabs, go_rock.transform.position, Quaternion.identity);
+        }
+
+        Destroy(go_rock); // 기존 돌을 아예 메모리에서 제거해버림
         go_debris.SetActive(true);
         Destroy(go_debris, destroyTime); // destroyTime 만큼의 시간 뒤에 메모리에서 제거됨
     }

@@ -3130,7 +3130,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3468093519873021417}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -104.84, y: -31.513006, z: 6.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3172,6 +3172,9 @@ MonoBehaviour:
   go_debris: {fileID: 3468093519128126875}
   go_effect_prefabs: {fileID: 564773228933162787, guid: f04f3d4f897dd9c41bbe846b1accdb30,
     type: 3}
+  go_rock_item_prefabs: {fileID: 3350476267891453309, guid: 0c7a3cb9f61e92547bda42d3e7f1a31e,
+    type: 3}
+  count: 3
   strike_Sound: Pickaxe_Strike
   destroy_Sound: Rock_Destroy
 --- !u!82 &3468093519873021421
