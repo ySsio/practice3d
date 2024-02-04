@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
     private void TryJump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGround) // 버튼을 누르는 순간을 의미
+        if(Input.GetKeyDown(KeyCode.Space) && isGround && theStatusController.GetCurrentSP() > 0) // 버튼을 누르는 순간을 의미
         {
             Jump();
         } 
@@ -165,12 +165,12 @@ public class PlayerController : MonoBehaviour
 
     private void TryRun()
     {
-        if (Input.GetKey(KeyCode.LeftShift)) // 누르고 있는 상태를 의미
+        if (Input.GetKey(KeyCode.LeftShift) && theStatusController.GetCurrentSP() > 0) // 누르고 있는 상태를 의미
         {
             Running();
         }
         // # 왜 else로 안하고 if문 두개로 하지... 고쳐보니까 똑같은거 같은데
-        if (Input.GetKeyUp(KeyCode.LeftShift))  // 버튼을 떼는 동작을 의미
+        if (Input.GetKeyUp(KeyCode.LeftShift)|| theStatusController.GetCurrentSP() <= 0)  // 버튼을 떼는 동작을 의미
         {
             RunningCancel();
         }

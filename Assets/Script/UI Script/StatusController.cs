@@ -130,6 +130,70 @@ public class StatusController : MonoBehaviour
         image_Gauge[SATISFY].fillAmount = (float)currentSatisfy / satisfy;
     }
 
+    public void RecoverHP(int _count)
+    {
+        if (currentHp + _count < hp)
+            currentHp += _count;
+        else 
+            currentHp = hp;
+    }
+
+    public void DecreaseHP(int _count)
+    {
+        if (currentDp >0)
+        {
+            DecreaseDP(_count);
+            return;
+        }
+
+        currentHp = Mathf.Max(currentHp - _count,0);
+
+        if (currentHp < 0)
+            Debug.Log("캐릭터의 hp가 0이 되었습니다");
+    }
+
+    public void RecoverDP(int _count)
+    {
+        if (currentDp + _count < dp)
+            currentDp += _count;
+        else
+            currentDp = dp;
+    }
+
+    public void DecreaseDP(int _count)
+    {
+        currentDp = Mathf.Max(currentDp - _count, 0);
+
+        if (currentDp < 0)
+            Debug.Log("캐릭터의 방어력이 0이 되었습니다");
+    }
+
+    public void RecoverHungry(int _count)
+    {
+        if (currentHungry + _count < hungry)
+            currentHungry += _count;
+        else
+            currentHungry = hungry;
+    }
+
+    public void DecreaseHungry(int _count)
+    {
+        currentHungry = Mathf.Max(currentHungry - _count, 0);
+    }
+
+    public void RecoverThirsty(int _count)
+    {
+        if (currentThirsty + _count < thirsty)
+            currentThirsty += _count;
+        else
+            currentThirsty = thirsty;
+    }
+
+    public void DecreaseThirsty(int _count)
+    {
+        currentThirsty = Mathf.Max(currentThirsty - _count, 0);
+    }
+
     // 기력은 특정 행동을 하면 닳게 할거니까 행동을 하는 스크립트에서 호출해야 함 .. public으로 만듦
     public void DecreaseStamina(int _count)
     {
@@ -160,5 +224,10 @@ public class StatusController : MonoBehaviour
         {
             currentSp += spRecoverSpeed;
         }
+    }
+
+    public int GetCurrentSP()
+    {
+        return currentSp;
     }
 }
