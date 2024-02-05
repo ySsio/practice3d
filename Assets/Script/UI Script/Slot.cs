@@ -17,15 +17,12 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
     private Text text_Count;
     [SerializeField]
     private GameObject go_CountImage; // 아이템 개수 이미지. 아이템 없으면 띄우지 않아야 하므로 껏다 켰다 해야 함
-   
-    private WeaponManager theWeaponManager; // serializefield 안한 이유는 이 스크립트가 prefab에 붙는데,
-                                            // prefab에서는 scene에 있는 hierarchy 컴포넌트를 받아올 수 가 없음.
-                                            // SerializeField로 할 수 있는 건 prefab 자기 자신의 컴포넌트만 가능함
-                                            // 그래서 Start 함수에서 초기화함
+
+    private ItemEffectDatabase theItemEffectDatabase;
 
     void Start()
     {
-        theWeaponManager = FindObjectOfType<WeaponManager>();
+        theItemEffectDatabase = FindObjectOfType<ItemEffectDatabase>();
     }
 
     private void SetColor(float _alpha) // 0~1?
@@ -89,18 +86,9 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
         {
             if (item != null)
             {
-                if (item.itemType == Item.ItemType.Equipment)
-                {
-                    // 장착
-                    StartCoroutine(theWeaponManager.ChangeWeaponCoroutine(item.weaponType,item.itemName));
-                }
-                else
-                {
-                    // 소모
-                    Debug.Log(item.itemName + "을 사용했습니다");
+                theItemEffectDatabase.UseItem(item);
+                if (item.itemType == Item.ItemType.Used)
                     SetSlotCount(-1);
-                    
-                }
             }
         }
     }
