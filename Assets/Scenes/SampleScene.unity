@@ -5509,7 +5509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0550059073bfa9448b5b0e8e7e08ae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 4
+  range: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -10638,7 +10638,6 @@ GameObject:
   - component: {fileID: 489041557}
   - component: {fileID: 489041556}
   - component: {fileID: 489041561}
-  - component: {fileID: 489041562}
   m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
@@ -10762,23 +10761,6 @@ MonoBehaviour:
   lookSensitivity: 2.7
   cameraRotationLimit: 45
   theCamera: {fileID: 330585545}
---- !u!114 &489041562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489041555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0550059073bfa9448b5b0e8e7e08ae5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  range: 5
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  actionText: {fileID: 269239870}
 --- !u!1 &518944752
 GameObject:
   m_ObjectHideFlags: 0
@@ -14934,11 +14916,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Rock
-      objectReference: {fileID: 0}
-    - target: {fileID: 3468093519873021417, guid: 36a1570afe201c440b629835a33f80a6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3468093519873021419, guid: 36a1570afe201c440b629835a33f80a6,
         type: 3}
