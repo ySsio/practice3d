@@ -82,8 +82,12 @@ public class PlayerController : MonoBehaviour
         TryCrouch();
         float moveSpeed = Move();
         MoveCheck(moveSpeed);
-        CameraRotation(); // 고개 위 아래로 회전만 구현
-        CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
+        if (!Inventory.inventoryActivated)
+        {
+            CameraRotation(); // 고개 위 아래로 회전만 구현
+            CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
+        }
+        
     }
 
     private void TryCrouch()
@@ -185,7 +189,7 @@ public class PlayerController : MonoBehaviour
         // 달리기 시 정조준 해제
         theGunController.CancelFineSight();
 
-        theStatusController.DecreaseStamina(10);
+        theStatusController.DecreaseStamina(1);
 
         isRun = true;
         theCrosshair.RunningAnimation(isRun);

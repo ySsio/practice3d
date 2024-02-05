@@ -3,19 +3,30 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Slot : MonoBehaviour
+// class는 1개만 상속 받을 수 있고, interface는 여러 개 상속 받을 수 있음
+public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     public Item item; // 획득한 아이템
     public int itemCount; // 획득한 아이템의 개수
     public Image itemImage; // 아이템의 이미지
-
 
     // 필요한 컴포넌트
     [SerializeField]
     private Text text_Count;
     [SerializeField]
     private GameObject go_CountImage; // 아이템 개수 이미지. 아이템 없으면 띄우지 않아야 하므로 껏다 켰다 해야 함
+   
+    private WeaponManager theWeaponManager; // serializefield 안한 이유는 이 스크립트가 prefab에 붙는데,
+                                            // prefab에서는 scene에 있는 hierarchy 컴포넌트를 받아올 수 가 없음.
+                                            // SerializeField로 할 수 있는 건 prefab 자기 자신의 컴포넌트만 가능함
+                                            // 그래서 Start 함수에서 초기화함
+
+    void Start()
+    {
+        theWeaponManager = FindObjectOfType<WeaponManager>();
+    }
 
     private void SetColor(float _alpha) // 0~1?
     {
@@ -70,4 +81,85 @@ public class Slot : MonoBehaviour
         text_Count.text = "0";
         go_CountImage.SetActive(false);
     }
+
+    // 이 스크립트 attach된 객체에 마우스를 가져다 대고 우클릭하면 이게 실행됨
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (item != null)
+            {
+                if (item.itemType == Item.ItemType.Equipment)
+                {
+                    // 장착
+                    StartCoroutine(theWeaponManager.ChangeWeaponCoroutine(item.weaponType,item.itemName));
+                }
+                else
+                {
+                    // 소모
+                    Debug.Log(item.itemName + "을 사용했습니다");
+                    SetSlotCount(-1);
+                    
+                }
+            }
+        }
+    }
+
+    // drag가 좌클릭으로 하는 드래그 전제인가 보네
+    // Slot이 직접 움직이지 않고 Dragslot이 이미지를 복사해서 대신 움직임
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (item != null)
+        {
+            DragSlot.instance.dragSlot = this;                                      // 아이템 위치 교환할 때 이전 슬롯에 대한 정보를 저장하기 위함
+            DragSlot.instance.DragSetImage(itemImage);
+
+            DragSlot.instance.transform.position = eventData.position;
+        }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (item != null)
+        {
+            DragSlot.instance.transform.position = eventData.position;
+        }
+    }
+
+    // OnEndDrag는 드래그가 끝난 객체에서 발생하는 이벤트 (A를 끌다가 어딘가에 떨구면 OnEndDrag가 실행됨)
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        DragSlot.instance.SetColor(0);
+        DragSlot.instance.dragSlot = null;
+    }
+
+
+    // OnDrop은 드래그 드롭이 떨어진 객체에서 발생하는 이벤트 (A를 끌다가 B에다 떨구면 A에서는 OnEndDrag가 실행되고 B에서는 OnDrop이 실행됨)
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (DragSlot.instance.dragSlot == null)
+            return;
+        ChangeSlot();
+    }
+
+    // A를 B에 드래그 해서 넣으면 B자리에 A가 들어가고 A자리에 B가 들어가는 상황 가정
+    // OnDrop에서 호출하는거니까 현재 객체가 B이고, Dragslot.instance.dragSlot이 A인 상황임
+    private void ChangeSlot()
+    {
+        // B (OnDrop이 발생한 객체 slot)의 정보를 임시저장함
+        Item _tempItem = item;
+        int _tempItemCount = itemCount;
+
+        // B slot 객체에 A의 아이템 정보를 넣음. AddItem()이 애초에 슬롯 정보를 덮어씌우는 함수임. 비울 필요 x
+        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
+
+        // B slot이 원래 빈 슬롯이었느지 확인
+        if (_tempItem != null)
+            // A slot에 B slot의 아이템을 넣음
+            DragSlot.instance.dragSlot.AddItem(_tempItem, _tempItemCount);
+        else
+            // B slot이 비어있었으면 A slot을 비움
+            DragSlot.instance.dragSlot.ClearSlot();
+    }
+
 }

@@ -42,9 +42,9 @@ public class ActionController : MonoBehaviour
 
     private void CheckItem()
     {
-        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, range, layerMask))  // 아이템 바라보면 줍기 활성화, 아이템정보 텍스트 띄움
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, range, layerMask))  // 아이템 바라보면 줍기 활성화, 아이템정보 텍스트 띄움, 레이어마스크 = "Item"
         {
-            if (hitInfo.transform.tag == "Item")
+            if (hitInfo.transform.tag == "Item") // # 궁금한게 layermask도 설정했는데 tag까지 해야됨? 왜>?
             {
                 ItemInfoAppear();
             }

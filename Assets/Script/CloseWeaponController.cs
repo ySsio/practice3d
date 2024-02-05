@@ -23,6 +23,8 @@ public abstract class CloseWeaponController : MonoBehaviour
     
     protected void TryAttack()
     {
+        if (Inventory.inventoryActivated)
+            return;
         if (Input.GetButton("Fire1")) // 좌클릭 받아옴 .. Project Setting >> input manager 에서 변수 설정 가능
         {
             if (!isAttack)
