@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 // class는 1개만 상속 받을 수 있고, interface는 여러 개 상속 받을 수 있음
-public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Item item; // 획득한 아이템
     public int itemCount; // 획득한 아이템의 개수
@@ -22,7 +22,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
     void Start()
     {
-        theItemEffectDatabase = FindObjectOfType<ItemEffectDatabase>();
+        theItemEffectDatabase = FindObjectOfType<ItemEffectDatabase>(); // 자원 줄이기 위해 얘한테 컴포넌트 다 등록해두고 얘만 찾아서 받아옴
     }
 
     private void SetColor(float _alpha) // 0~1?
@@ -77,6 +77,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
 
         text_Count.text = "0";
         go_CountImage.SetActive(false);
+        theItemEffectDatabase.HideToolTip();
     }
 
     // 이 스크립트 attach된 객체에 마우스를 가져다 대고 우클릭하면 이게 실행됨
@@ -128,6 +129,9 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
         if (DragSlot.instance.dragSlot == null)
             return;
         ChangeSlot();
+        // 아이템 바꿀 때 툴팁 바로 갱신 되도록 한 번 숨겼다가 다시 보여줌
+        theItemEffectDatabase.HideToolTip();
+        theItemEffectDatabase.ShowToolTip(item, transform.position);
     }
 
     // A를 B에 드래그 해서 넣으면 B자리에 A가 들어가고 A자리에 B가 들어가는 상황 가정
@@ -149,5 +153,27 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDra
             // B slot이 비어있었으면 A slot을 비움
             DragSlot.instance.dragSlot.ClearSlot();
     }
+
+    // 마우스가 객체에 들어올 때 발생하는 이벤트
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (item == null)
+            return;
+        theItemEffectDatabase.ShowToolTip(item, transform.position);
+    }
+
+    // 마우스가 객체에서 빠져나갈 때 발생하는 이벤트
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        theItemEffectDatabase.HideToolTip();
+    }
+
+    public void OnMouseOver(PointerEventData eventData)
+    {
+        if (item == null)
+            return;
+        theItemEffectDatabase.ShowToolTip(item, Input.mousePosition);
+    }
+
 
 }

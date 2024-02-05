@@ -7,7 +7,9 @@ using UnityEngine;
 public class Item : ScriptableObject        // 게임 오브젝트에 붙일 필요 없음
 {
     public string itemName; // 아이템 이름
-    public ItemType itemType;
+    [TextArea]
+    public string itemDescription; // 아이템설명
+    public ItemType itemType; // 아이템 유형
     public Sprite itemImage; // 아이템의 이미지 (인벤토리 이미지)
                              // image와 sprite의 차이 : image는 canvas에만 띄울 수 있고 sprite는 world에서 직접 출력시킬 수 있음.
     public GameObject itemPrefab; // 아이템의 prefab
@@ -22,5 +24,5 @@ public class Item : ScriptableObject        // 게임 오브젝트에 붙일 필요 없음
     }
     // # enum으로 하는 것과 string/ dictionary 로 받아오는 것과의 차이?
 
-
+ 
 }

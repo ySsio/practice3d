@@ -21,8 +21,21 @@ public class ItemEffectDatabase : MonoBehaviour
     private StatusController theStatusController;
     [SerializeField]
     private WeaponManager theWeaponManager;
+    [SerializeField]
+    private SlotToolTip theSlotToolTip;
 
     private const string HP = "HP", SP = "SP", DP = "DP", HUNGRY = "HUNGRY", THIRSTY = "THIRSTY", SATISFY = "SATISFY";
+
+    // # 왜 굳이 theSlotToolTip을 public으로 안하고 public 함수를 정의해서 다시 함수를 만드는지? 뭐임
+    public void ShowToolTip(Item _item, Vector3 _pos)
+    {
+        theSlotToolTip.ShowToolTip(_item, _pos);
+    }
+
+    public void HideToolTip ()
+    {
+        theSlotToolTip.HideToolTip();
+    }
 
     public void UseItem (Item _item)
     {

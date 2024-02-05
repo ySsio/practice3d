@@ -13,6 +13,8 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private GameObject go_SlotsParent; // grid setting
 
+    private ItemEffectDatabase theItemEffectDatabase;
+
     // 슬롯들
     private Slot[] slots;
 
@@ -20,6 +22,7 @@ public class Inventory : MonoBehaviour
     private void Start()
     {
         slots = go_SlotsParent.GetComponentsInChildren<Slot>(); // 자식 개체들에 있는 slot 컴포넌트를 모두 읽어옴
+        theItemEffectDatabase = FindObjectOfType<ItemEffectDatabase>();
     }
 
     // Update is called once per frame
@@ -55,6 +58,7 @@ public class Inventory : MonoBehaviour
     private void CloseInventory()
     {
         go_InventoryBase.SetActive(false);
+        theItemEffectDatabase.HideToolTip();
     }
 
 
