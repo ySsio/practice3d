@@ -111,7 +111,7 @@ public class GunController : MonoBehaviour
                         0);
 
         // 캠 정면이 z축이고, 정확도를 받아서 x,y로 랜덤하게 변주를 줌
-        if (Physics.Raycast(theCam.transform.position, _direction, out hitInfo, currentGun.range))
+        if (Physics.Raycast(theCam.transform.position, _direction, out hitInfo, currentGun.range, ~(1<<LayerMask.NameToLayer("Player"))))
         {
             // Instantiate : 객체 생성 메서드
             // hitInfo.point : 충돌한 지점의 좌표 반환

@@ -18,7 +18,6 @@ public abstract class CloseWeaponController : MonoBehaviour
     protected bool isSwing = false;
 
     protected RaycastHit hitInfo; // ray에 닿은 놈의 정보를 받아옴
-    protected int targetMask = (-1) - (1 << 11); // 플레이어 레이어 제외한 모든 레이어만 감지함
     
 
     // Update is called once per frame
@@ -63,7 +62,7 @@ public abstract class CloseWeaponController : MonoBehaviour
 
     protected bool CheckObject() // 공격이 닿았는지 raycast로 판정하는 함수 (내 몸에서 나와서 화면 십자가로 뻗는 ray일듯? 실제 주먹 collider로 구현 안한다고 함)
     {
-        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, currentCloseWeapon.range, (-1) - (1 << 11))) // 사거리는 무기에서 받아옴 # out hitInfo는 뭐야 raycast 문법 공부하기
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, currentCloseWeapon.range, ~(1 << LayerMask.NameToLayer("Player")))) // 사거리는 무기에서 받아옴 # out hitInfo는 뭐야 raycast 문법 공부하기
         {
             return true;
         }
