@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Animal : MonoBehaviour
 {
@@ -9,9 +10,8 @@ public class Animal : MonoBehaviour
     [SerializeField] protected int hp;
     [SerializeField] protected float walkSpeed;
     [SerializeField] protected float runSpeed;
-    protected float applySpeed;
     [SerializeField] protected float rotationSpeed;
-    protected Vector3 direction; // 방향 설정
+    protected Vector3 destination; // 목적지
 
     // 상태변수
     protected bool isAction; // 행동 중인지 아닌지 판별.
@@ -34,27 +34,38 @@ public class Animal : MonoBehaviour
     [SerializeField] protected Rigidbody rigid;
     [SerializeField] protected BoxCollider boxCol;
     protected AudioSource theAudioSource;
+    protected NavMeshAgent nav;
+
     [SerializeField] protected AudioClip[] sounds;
     [SerializeField] protected AudioClip soundHurt;
     [SerializeField] protected AudioClip soundDead;
 
+    void Start()
+    {
+        nav = GetComponent<NavMeshAgent>();
+        theAudioSource = GetComponent<AudioSource>();
+        currentTime = waitTime;
+        isAction = true;
+    }
+
+    void Update()
+    {
+        if (isDead)
+            return;
+        ElapseTime();
+        Move();
+    }
 
     // 뭐 얘는 이렇게 구현했는데
     // TryWalk() 함수 밑에 보간법 이용한 코루틴으로 해도 됐을 듯? .. # Update vs Coroutine 알아보기!
     protected void Move()
     {
         if (isWalking || isRunning)
-            rigid.MovePosition(transform.position + transform.forward * applySpeed * Time.deltaTime);
+            //rigid.MovePosition(transform.position + transform.forward * applySpeed * Time.deltaTime);
+            nav.SetDestination(transform.position + destination * 5f);
     }
 
-    protected void Rotation()
-    {
-        if (isWalking || isRunning)
-        {
-            Vector3 _rotation = Vector3.Lerp(transform.eulerAngles, new Vector3(0f, direction.y, 0f), rotationSpeed);
-            rigid.MoveRotation(Quaternion.Euler(_rotation));
-        }
-    }
+
 
     protected void ElapseTime()
     {
@@ -72,9 +83,10 @@ public class Animal : MonoBehaviour
     protected virtual void ResetAction()
     {
         isWalking = false; isRunning = false; isAction = true;
-        applySpeed = walkSpeed;
+        nav.speed = walkSpeed;
+        nav.ResetPath();
         anim.SetBool("Walk", isWalking); anim.SetBool("Run", isRunning);
-        direction.Set(0f, Random.Range(0f, 360f), 0f);
+        destination.Set(Random.Range(-.2f, .2f), 0f, Random.Range(.5f, 1f));
     }
 
     protected void TryWalk()
@@ -82,7 +94,7 @@ public class Animal : MonoBehaviour
         isWalking = true;
         anim.SetBool("Walk", isWalking);
         currentTime = walkTime; // 이 동작을 시작하고 다음 동작 시작하기까지의 시간
-        applySpeed = walkSpeed;
+        nav.speed = walkSpeed;
         Debug.Log("걷기");
     }
 
@@ -125,6 +137,7 @@ public class Animal : MonoBehaviour
     {
         isDead = true;
         PlaySE(soundDead);
+        nav.ResetPath();
         isWalking = false; isRunning = false; // 움직이면 안되니까 멈춤
         anim.SetTrigger("Dead");
 

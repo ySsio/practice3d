@@ -5,21 +5,7 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class Pig : WeakAnimal
 {   
-    void Start()
-    {
-        theAudioSource = GetComponent<AudioSource>();
-        currentTime = waitTime;
-        isAction = true;
-    }
-
-    void Update()
-    {
-        if (isDead)
-            return;
-        ElapseTime();
-        Rotation(); // 코루틴이 아니라 보간법으로 회전하면서 걸어감
-        Move();
-    }
+    
 
     private void RandomAction()
     {
