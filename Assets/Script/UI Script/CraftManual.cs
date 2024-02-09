@@ -31,6 +31,8 @@ public class CraftManual : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float range;
 
+    
+
     public void SlotClick(int _slotNumber)
     {
         go_Preview = Instantiate(craft_fire[_slotNumber].go_PreviewPrefab, tf_Player.position + tf_Player.forward, Quaternion.identity);
@@ -48,7 +50,7 @@ public class CraftManual : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab) && !isPreviewActivated)
         {
-            OpenTab();
+            ToggleWindow();
         }
 
         if (isPreviewActivated)
@@ -69,7 +71,7 @@ public class CraftManual : MonoBehaviour
 
     private void Build()
     {
-        if (!isPreviewActivated)
+        if (!isPreviewActivated || !go_Preview.GetComponent<PreviewObject>().isBuildable())
             return;
 
         Instantiate(go_Prefab, hitInfo.point, Quaternion.identity);
@@ -109,7 +111,7 @@ public class CraftManual : MonoBehaviour
     }
 
 
-    private void OpenTab ()
+    private void ToggleWindow()
     {
         //isActivated = !isActivated;
         if (!isActivated)
