@@ -75,18 +75,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!GameManager.canPlayerMove)
+            return;
         IsGround();
         TryJump();
         TryRun();
         TryCrouch();
         float moveSpeed = Move();
         MoveCheck(moveSpeed);
-        if (!Inventory.inventoryActivated)
-        {
-            CameraRotation(); // 고개 위 아래로 회전만 구현
-            CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
-        }
+        CameraRotation(); // 고개 위 아래로 회전만 구현
+        CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
         
     }
 
