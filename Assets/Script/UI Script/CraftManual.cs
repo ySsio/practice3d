@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 [System.Serializable]
 public class Craft
@@ -31,6 +31,10 @@ public class CraftManual : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float range;
 
+    // 컴포넌트 저장 변수
+    private GameObject[] tabList; // 탭 리스트 저장할 변수
+    private GameObject[] slotsList; // 슬롯그룹리스트 저장할 변수
+
     
 
     public void SlotClick(int _slotNumber)
@@ -43,6 +47,7 @@ public class CraftManual : MonoBehaviour
 
     }
 
+    
 
 
     // Update is called once per frame
