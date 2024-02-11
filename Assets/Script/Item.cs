@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 우클릭해서 create 할 수 있는 항목에 New Item > item을 추가 한 것! 생성했을 때 디폴트 이름이 fileName에 해당하는 이름
-[CreateAssetMenu(fileName = "New Item", menuName = "New Item/item")]
+[CreateAssetMenu(fileName = "New Item", menuName = "Custom/Item")]
 public class Item : ScriptableObject        // 게임 오브젝트에 붙일 필요 없음
 {
     public string itemName; // 아이템 이름

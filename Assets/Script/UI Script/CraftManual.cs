@@ -4,13 +4,7 @@ using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class Craft
-{
-    public string craftName;
-    public GameObject go_Prefab; // 실제 설치될 프리펩.
-    public GameObject go_PreviewPrefab; // 미리보기 프리펩.
-}
+
 public class CraftManual : MonoBehaviour
 {
     // 상태변수
@@ -31,11 +25,14 @@ public class CraftManual : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float range;
 
+
     // 컴포넌트 저장 변수
+    [SerializeField]
     private GameObject[] tabList; // 탭 리스트 저장할 변수
+    [SerializeField]
     private GameObject[] slotsList; // 슬롯그룹리스트 저장할 변수
 
-    
+
 
     public void SlotClick(int _slotNumber)
     {
@@ -47,7 +44,23 @@ public class CraftManual : MonoBehaviour
 
     }
 
-    
+    // Tab을 누르면 해당 Tab에 해당하는 건축물들로 슬롯 그룹을 바꾼다.
+    // 레시피를 습득할 때마다 탭 객체/ 슬롯 그리드 객체 를 리스트로 받아와서 저장해두고, _tabNumber와 같은 인덱스의 슬롯그룹을 켜는 식으로 하면 될 듯.
+    public void TabClick(int _tabNumber)
+    {
+        for (int i = 0; i < slotsList.Length; i++)
+        {
+            slotsList[i].SetActive(false);
+        }
+        slotsList[_tabNumber].SetActive(true);
+    }
+
+
+    // 새로운 크래프트 레시피를 습득하면 크래프트 매뉴얼에 추가하는 기능.
+    public void LearnBluePrint(string _craftName)
+    {
+
+    }
 
 
     // Update is called once per frame
