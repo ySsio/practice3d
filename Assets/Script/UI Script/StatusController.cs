@@ -140,7 +140,8 @@ public class StatusController : MonoBehaviour
 
     public void DecreaseHP(int _count)
     {
-        if (currentDp >0)
+        // 방어력이 있으면 방어력 먼저 까임
+        if (currentDp > 0)
         {
             DecreaseDP(_count);
             return;
@@ -148,7 +149,7 @@ public class StatusController : MonoBehaviour
 
         currentHp = Mathf.Max(currentHp - _count,0);
 
-        if (currentHp < 0)
+        if (currentHp <= 0)
             Debug.Log("캐릭터의 hp가 0이 되었습니다");
     }
 
@@ -164,7 +165,7 @@ public class StatusController : MonoBehaviour
     {
         currentSp = Mathf.Max(currentSp - _count, 0);
 
-        if (currentSp < 0)
+        if (currentSp <= 0)
             Debug.Log("캐릭터의 기력이 0이 되었습니다");
     }
 
@@ -180,7 +181,7 @@ public class StatusController : MonoBehaviour
     {
         currentDp = Mathf.Max(currentDp - _count, 0);
 
-        if (currentDp < 0)
+        if (currentDp <= 0)
             Debug.Log("캐릭터의 방어력이 0이 되었습니다");
     }
 
