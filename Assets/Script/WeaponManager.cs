@@ -194,5 +194,25 @@ public class WeaponManager : MonoBehaviour
         
         currentWeaponType = _type;
     }
+
+    public IEnumerator WeaponInCoroutine()
+    {
+        isChangeWeapon = true; // 이 코루틴 끝날 때까지 TryChaneWeapon() 무시 (= 무기교체 x)
+
+        // 무기 교체 애니메이션 실행, 애니메이션 실행 동안 딜레이 부여
+        currentWeaponAnim.SetTrigger("Weapon_Out");
+
+        yield return new WaitForSeconds(changeWeaponDelayTime);
+
+        currentWeapon.gameObject.SetActive(false);
+    }
+
+    public void WeaponOut()
+    {
+        isChangeWeapon = false; // 이 코루틴 끝날 때까지 TryChaneWeapon() 무시 (= 무기교체 x)
+
+        currentWeapon.gameObject.SetActive(true);
+    }
+
 }
 

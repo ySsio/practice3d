@@ -14,6 +14,12 @@ public class PlayerController : MonoBehaviour
     private float runSpeed;
     [SerializeField]
     private float crouchSpeed;
+    [SerializeField]
+    private float swimSpeed;
+    [SerializeField]
+    private float swimFastSpeed;
+    [SerializeField]
+    private float swimUpSpeed;
 
     private float applySpeed; // walk or run
 
@@ -77,15 +83,29 @@ public class PlayerController : MonoBehaviour
     {
         if (!GameManager.canPlayerMove)
             return;
+
+        WaterCheck();
+
         IsGround();
         TryJump();
-        TryRun();
+        if(!GameManager.isWater) TryRun();
         TryCrouch();
         float moveSpeed = Move();
         MoveCheck(moveSpeed);
         CameraRotation(); // 고개 위 아래로 회전만 구현
         CharacterRotation(); // 좌우로 시야 회전하는거는 캐릭터 자체를 회전시켜서 구현함
         
+    }
+
+    private void WaterCheck()
+    {
+        if (GameManager.isWater)
+        {
+            if(Input.GetKeyDown(KeyCode.LeftShift))
+                applySpeed = swimFastSpeed;
+            else
+                applySpeed = swimSpeed;
+        }
     }
 
     private void TryCrouch()
@@ -139,10 +159,18 @@ public class PlayerController : MonoBehaviour
 
     private void TryJump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGround && theStatusController.GetCurrentSP() > 0) // 버튼을 누르는 순간을 의미
+        if(Input.GetKeyDown(KeyCode.Space) && isGround && theStatusController.GetCurrentSP() > 0 && !GameManager.isWater) // 버튼을 누르는 순간을 의미
         {
             Jump();
-        } 
+        } else if (Input.GetKey(KeyCode.Space) && GameManager.isWater)
+        {
+            UpSwim();
+        }
+    }
+
+    private void UpSwim()
+    {
+        myRigid.velocity = transform.up * swimUpSpeed;
     }
 
     private void Jump()
