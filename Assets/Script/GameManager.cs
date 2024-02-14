@@ -9,7 +9,8 @@ public class GameManager : MonoBehaviour
     public static bool isOpenInventory = false; // 인벤토리 활성화
     public static bool isOpenCraftManual = false; // 건축메뉴 활성화
 
-
+    public static bool isNight = false;
+    public static bool isWater = false;
 
     void Start()
     {

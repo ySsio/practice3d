@@ -6,7 +6,6 @@ public class DayAndNight : MonoBehaviour
 {
     [SerializeField] private float secondPerRealTimeSecond; // 게임 세계 100초 = 현실 세계 1초
 
-    private bool isNight = false;
 
     [SerializeField] private float fogDensityCalc; // 안개밀도 증감량 비율
 
@@ -27,11 +26,11 @@ public class DayAndNight : MonoBehaviour
         transform.Rotate(Vector3.right, 0.1f * secondPerRealTimeSecond * Time.deltaTime);
 
         if (transform.eulerAngles.x >= 170)
-            isNight = true;
+            GameManager.isNight = true;
         else if (transform.eulerAngles.x <= 340)
-            isNight = false;
+            GameManager.isNight = false;
 
-        if (isNight)
+        if (GameManager.isNight)
         {
             if (currentFogDensity > nightFogDensity)
                 return;
