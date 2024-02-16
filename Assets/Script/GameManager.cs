@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public static bool isNight = false;
     public static bool isWater = false;
 
+    public static bool isPause = false; // 메뉴 호출되면 true
+
     private WeaponManager theWM;
     private bool flag = false;
 
@@ -26,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (isOpenInventory || isOpenCraftManual)
+        if (isOpenInventory || isOpenCraftManual || isPause)
         {
             canPlayerMove = false;
             Cursor.lockState = CursorLockMode.None;
