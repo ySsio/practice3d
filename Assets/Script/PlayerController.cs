@@ -53,8 +53,7 @@ public class PlayerController : MonoBehaviour
     private float currentCameraRotationX = 0f; // 정면으로 디폴트 세팅
 
     // 필요한 컴포넌트
-    [SerializeField]
-    private Camera theCamera;
+    public Camera theCamera;
     private Rigidbody myRigid;
     private GunController theGunController;
     private CrossHair theCrosshair;

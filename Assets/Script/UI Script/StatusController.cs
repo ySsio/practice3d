@@ -96,7 +96,7 @@ public class StatusController : MonoBehaviour
         }
         else
         {
-            Debug.Log("배고픔 수치가 0이 되었습니다");
+            //Debug.Log("배고픔 수치가 0이 되었습니다");
         }
     }
 
@@ -116,7 +116,7 @@ public class StatusController : MonoBehaviour
         }
         else
         {
-            Debug.Log("목마름 수치가 0이 되었습니다");
+            //Debug.Log("목마름 수치가 0이 되었습니다");
         }
     }
 
@@ -166,7 +166,7 @@ public class StatusController : MonoBehaviour
         currentSp = Mathf.Max(currentSp - _count, 0);
 
         if (currentSp <= 0)
-            Debug.Log("캐릭터의 기력이 0이 되었습니다");
+        Debug.Log("캐릭터의 기력이 0이 되었습니다");
     }
 
     public void RecoverDP(int _count)

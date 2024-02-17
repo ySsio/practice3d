@@ -5756,6 +5756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   go_BaseUI: {fileID: 677908189}
+  theSaveAndLoad: {fileID: 730733835}
 --- !u!1 &170060352
 GameObject:
   m_ObjectHideFlags: 0
@@ -5931,6 +5932,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   go_InventoryBase: {fileID: 1993542151}
   go_SlotsParent: {fileID: 259432735}
+  items:
+  - {fileID: 11400000, guid: 0c9be5b6a33a679439efb4c16046858c, type: 2}
+  - {fileID: 11400000, guid: faf94047cf96c0646a476fd38e10572a, type: 2}
+  - {fileID: 11400000, guid: 53ce4970985758a48a57f910dc32db25, type: 2}
 --- !u!224 &209407517
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12465,7 +12470,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489041555}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -30.2, y: 15.3, z: -14.4}
+  m_LocalPosition: {x: -13.22, y: 2.11, z: -14.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -13148,6 +13153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 730733833}
   - component: {fileID: 730733834}
+  - component: {fileID: 730733835}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -13180,6 +13186,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e630fee331b35984eaece807d51ae92a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &730733835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730733832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ce5934456d4cb489ba99815f8de036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &733852459
@@ -13538,7 +13556,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 166069767}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: ClickSave
+        m_MethodName: ClickLoad
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
